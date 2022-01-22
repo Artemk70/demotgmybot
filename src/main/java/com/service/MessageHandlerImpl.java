@@ -2,6 +2,7 @@ package com.service;
 
 import com.dao.CourseDAO;
 import com.dao.СurrenciesDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,7 +14,13 @@ import java.util.Optional;
 
 @Service
 public class MessageHandlerImpl implements MessageHandler {
+    private FindOutTheExchangeRateImpl exchangeRate;
     private final String commandCurrencyConverter = "/exchange_rate";
+
+    @Autowired
+    public void setExchangeRate(FindOutTheExchangeRateImpl exchangeRate) {
+        this.exchangeRate = exchangeRate;
+    }
 
     @Override
     public BotApiMethod<?> handler(Update update) {
@@ -30,15 +37,17 @@ public class MessageHandlerImpl implements MessageHandler {
                         commandEntity.get().getLength());
 
                 if (commandCurrencyConverter.equals(command)) {
-                    FindOutTheExchangeRateImpl exchangeRate = new FindOutTheExchangeRateImpl();
                     CourseDAO course = exchangeRate.getCourse();
                     СurrenciesDAO valute = course.getValute();
                     Double usd = valute.getUsd().getValue();
                     Double eur = valute.getEur().getValue();
+                    String data = course.getDate();
 
                     sendMessage = SendMessage.builder()
                             .chatId(message.getChatId().toString())
-                            .text("USD: " + usd
+                            .text(data +
+                                    "\n" +
+                                    "USD: " + usd
                                     + "\n" +
                                     "EUR: " + eur)
                             .build();
