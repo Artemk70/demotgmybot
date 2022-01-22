@@ -25,10 +25,6 @@ public class AppConfig {
     @Bean
     public Bot bot() {
         DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-        defaultBotOptions.setProxyType(proxyType);
-        defaultBotOptions.setProxyHost(proxyHost);
-        defaultBotOptions.setProxyPort(proxyPort);
-
         Bot bot = new Bot(defaultBotOptions);
         return bot;
     }
