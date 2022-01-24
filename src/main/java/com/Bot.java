@@ -1,5 +1,6 @@
 package com;
 
+import com.service.handler.HandlerImpl;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +18,15 @@ public class Bot extends TelegramWebhookBot {
     private String token;
     private String botPath;
 
-    private MessageHandlerImpl messageHandler;
+    private HandlerImpl handler;
 
     public Bot(DefaultBotOptions options) {
         super(options);
     }
 
     @Autowired
-    public void setMessageHandler(MessageHandlerImpl messageHandler) {
-        this.messageHandler = messageHandler;
+    public void setHandler(HandlerImpl handler) {
+        this.handler = handler;
     }
 
     @Override
@@ -45,6 +46,6 @@ public class Bot extends TelegramWebhookBot {
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        return messageHandler.handler(update);
+        return handler.handler(update);
     }
 }
